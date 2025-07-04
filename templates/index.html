@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>紅茶サーバー</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1> 紅茶サーバーAI</h1>
+            <p>パンダ店主があなたにぴったりの紅茶を提案します。</p>
+        </header>
+
+
+        <main class="conversation-area">
+            <div class="panda-display">
+
+                <img id="panda-image" src="/static/images/panda_neutral.jpeg" alt="パンダ店主" class="panda-image">
+                <div class="panda-dialog-bubble" id="panda-dialog-bubble">
+                    <p id="panda-dialog-text">いらっしゃいませ。ゆっくりしていってくださいね。</p>
+                </div>
+            </div>
+
+            <div class="user-interaction">
+                <div class="message-history" id="message-history">
+                    <div class="message system-message">
+                        <p><strong>システム:</strong> 会話を開始ボタンを押して、パンダ店主とお話しください。</p>
+                    </div>
+                </div>
+
+                <div class="input-controls">
+                    <input type="text" id="user-input-field" placeholder="ここにメッセージを入力..." disabled>
+                    <button id="send-input-button" disabled>送信</button>
+                    <button id="start-conversation-button">会話を開始</button>
+                    <button id="end-conversation-button" disabled>会話を終了</button>
+
+                </div>
+
+                <div class="admin-controls">
+                    <h3>管理者用設定</h3>
+                    <input type="text" id="admin-tea1-name" placeholder="紅茶1 (例: セイロン)">
+                    <input type="text" id="admin-tea2-name" placeholder="紅茶2 (例: アッサム)">
+                    <input type="text" id="admin-tea3-name" placeholder="紅茶3 (例: ダージリン)">
+                    <button id="update-tea-names-button">茶葉名を更新</button>
+                    <button id="get-tea-names-button">現在の茶葉名を取得</button>
+                    <div id="admin-message" class="admin-message"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 mt</p>
+        </footer>
+    </div>
+
+    <script src="../static/script.js" defer></script>
+</body>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        /* 上部に寄せる */
+        min-height: 100vh;
+
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .container {
+        background-color: #ffffff;
+
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 1200px;
+        /* 最大幅を広げる */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        /* 角丸に合わせたはみ出し防止 */
+    }
+
+    header {
+        background-color: #8B4513;
+        /* 茶色 */
+        color: #fff;
+        padding: 20px 30px;
+        text-align: center;
+        border-bottom: 1px solid #7a3d10;
+        border-top-left-radius: 12px;
+
+        border-top-right-radius: 12px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.2em;
+    }
+
+
+    header p {
+        margin-top: 5px;
+        font-size: 1.1em;
+        opacity: 0.9;
+    }
+
+    .conversation-area {
+        display: flex;
+        flex-grow: 1;
+        padding: 20px;
+        gap: 20px;
+        /* カラム間のスペース */
+    }
+
+    .panda-display {
+        flex: 1;
+        /* 左半分 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        /* 上部に寄せる */
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        position: relative;
+        /* 吹き出しの配置のため */
+    }
+
+    .panda-image {
+        max-width: 80%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .panda-dialog-bubble {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+
+        padding: 15px 20px;
+        margin-top: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+        max-width: 90%;
+        text-align: center;
+        font-size: 1.1em;
+        line-height: 1.5;
+    }
+
+    .panda-dialog-bubble::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        /* 吹き出しのしっぽの位置調整 */
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+    }
+
+    .user-interaction {
+        flex: 1;
+        /* 右半分 */
+        display: flex;
+        flex-direction: column;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+    }
+
+    .message-history {
+        flex-grow: 1;
+        overflow-y: auto;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .message {
+        margin-bottom: 10px;
+
+        padding: 8px 12px;
+        border-radius: 6px;
+        line-height: 1.4;
+        word-wrap: break-word;
+        /* 長い単語の折り返し */
+    }
+
+    .system-message {
+        background-color: #e3f2fd;
+        /* 薄い青 */
+        color: #2196f3;
+        text-align: center;
+    }
+
+    .user-message {
+
+        background-color: #e8f5e9;
+        /* 薄い緑 */
+        color: #4caf50;
+        text-align: right;
+    }
+
+    .ai-message {
+        background-color: #ffe0b2;
+        /* 薄いオレンジ */
+        color: #ff9800;
+        text-align: left;
+    }
+
+    .tea-suggestion-message {
+        background-color: #dcedc8;
+        /* 薄い緑 */
+        border: 1px solid #8bc34a;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        font-weight: bold;
+        color: #33691e;
+    }
+
+
+
+    .input-controls,
+    .admin-controls {
+        display: flex;
+        flex-wrap: wrap;
+        /* ボタンが複数行になる場合 */
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .input-controls input[type="text"],
+    .admin-controls input[type="text"] {
+        flex-grow: 1;
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1em;
+        min-width: 150px;
+        /* 小さい画面での入力フィールドの最小幅 */
+    }
+
+    .input-controls button,
+    .admin-controls button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: background-color 0.2s ease;
+    }
+
+    #start-conversation-button {
+        background-color: #4CAF50;
+        /* 緑 */
+        color: white;
+    }
+
+    #start-conversation-button:hover {
+        background-color: #45a049;
+    }
+
+    #send-input-button {
+        background-color: #2196F3;
+        /* 青 */
+        color: white;
+    }
+
+    #send-input-button:hover {
+        background-color: #1976d2;
+    }
+
+    #end-conversation-button {
+        background-color: #f44336;
+        /* 赤 */
+        color: white;
+    }
+
+    #end-conversation-button:hover {
+        background-color: #d32f2f;
+    }
+
+    .admin-controls h3 {
+        width: 100%;
+        margin-bottom: 10px;
+        color: #555;
+        font-size: 1.2em;
+        border-bottom: 1px dashed #ddd;
+        padding-bottom: 5px;
+    }
+
+    .admin-controls button {
+        background-color: #ffc107;
+        /* 黄色 */
+        color: #333;
+    }
+
+    .admin-controls button:hover {
+        background-color: #ffa000;
+    }
+
+    .admin-message {
+
+        width: 100%;
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 5px;
+        background-color: #fffde7;
+        color: #fbc02d;
+        border: 1px solid #ffe082;
+        font-size: 0.9em;
+    }
+
+    button:disabled {
+        background-color: #cccccc !important;
+        cursor: not-allowed;
+        color: #666666 !important;
+    }
+
+    footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 15px 20px;
+        font-size: 0.9em;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    /* レスポンシブデザイン */
+
+    @media (max-width: 768px) {
+        .conversation-area {
+            flex-direction: column;
+        }
+
+        .panda-display,
+        .user-interaction {
+            flex: none;
+            /* 固定幅ではなくなる */
+            width: 100%;
+        }
+
+        .input-controls,
+        .admin-controls {
+            flex-direction: column;
+        }
+
+
+        .input-controls input[type="text"],
+        .admin-controls input[type="text"] {
+            width: 100%;
+            min-width: unset;
+
+        }
+    }
+</style>
+
+</html>
