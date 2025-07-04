@@ -1,4 +1,4 @@
-import serial
+import arduino_serial
 import time
 
 
@@ -11,7 +11,7 @@ class ArduinoController:
     
     def connect(self):
         try:
-            self.ser = serial.Serial(self.port, self.baud_rate, timeout=self.timeout)
+            self.ser = arduino_serial.Serial(self.port, self.baud_rate, timeout=self.timeout)
             time.sleep(2) # Arduinoの起動を待つ
             print(f"[{self.port}] Serial connection established successfully.")
 
@@ -20,7 +20,7 @@ class ArduinoController:
                 response = self.ser.readline().decode('utf-8').strip()
                 print(f"[{self.port}] Arduino says: {response}")
             return True
-        except serial.SerialException as e:
+        except arduino_serial.SerialException as e:
             print(f"[{self.port}] Error connecting to Arduino: {e}")
             print("Please check:")
             print(f"  - Is Arduino connected to {self.port}?")
@@ -55,7 +55,7 @@ class ArduinoController:
 
 # このファイルが直接実行された場合のテストコード
 if __name__ == "__main__":
-    # ここは、実際にあなたのArduinoが接続されているポートに置き換えてください
+    # ここは、実際にArduinoが接続されているポートに置き換えてください
     # 例: '/dev/ttyACM0' または '/dev/ttyUSB0'
     arduino_port = '/dev/ttyACM0'
 
