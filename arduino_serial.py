@@ -41,7 +41,7 @@ class ArduinoController:
             return None
 
         try:
-            self.ser.write(command.encode('utf-8'))
+            self.ser.write((command + '/n').encode('utf-8'))
             print(f"[{self.port}] Sent: {command}")
             time.sleep(0.1) # Arduinoからの返信を待つ
 
@@ -53,10 +53,7 @@ class ArduinoController:
             print(f"[{self.port}] Error sending command or receiving response: {e}")
             return None
 
-# このファイルが直接実行された場合のテストコード
 if __name__ == "__main__":
-    # ここは、実際にあなたのArduinoが接続されているポートに置き換えてください
-    # 例: '/dev/ttyACM0' または '/dev/ttyUSB0'
     arduino_port = '/dev/ttyACM0'
 
     arduino = ArduinoController(port=arduino_port)
@@ -64,13 +61,13 @@ if __name__ == "__main__":
     if arduino.connect():
         try:
             print("\n--- Testing relay control ---")
-            # LED ON
+            # RELAY ON
             response = arduino.send_command('relay_on')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(5) # 1秒待機
 
-            # LED OFF
+            # RELAY OFF
             response = arduino.send_command('relay_off')
             if response:
                 print(f"Arduino response: {response}")
