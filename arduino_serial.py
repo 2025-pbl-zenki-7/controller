@@ -63,18 +63,18 @@ if __name__ == "__main__":
 
     if arduino.connect():
         try:
-            print("\n--- Testing LED control ---")
+            print("\n--- Testing motor control ---")
             # LED ON
-            response = arduino.send_command('1')
+            response = arduino.send_command('motor_on')
             if response:
                 print(f"Arduino response: {response}")
-            time.sleep(1) # 1秒待機
+            time.sleep(5) # 1秒待機
 
             # LED OFF
-            response = arduino.send_command('0')
+            response = arduino.send_command('motor_off')
             if response:
                 print(f"Arduino response: {response}")
-            time.sleep(1) # 1秒待機
+            time.sleep(5) # 1秒待機
 
             # 不明なコマンドを送信
             response = arduino.send_command('X')
