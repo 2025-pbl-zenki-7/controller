@@ -59,31 +59,31 @@ if __name__ == "__main__":
     # 例: '/dev/ttyACM0' または '/dev/ttyUSB0'
     arduino_port = '/dev/ttyACM0'
 
-    controller = ArduinoController(port=arduino_port)
+    arduino = ArduinoController(port=arduino_port)
 
-    if controller.connect():
+    if arduino.connect():
         try:
             print("\n--- Testing LED control ---")
             # LED ON
-            response = controller.send_command('1')
+            response = arduino.send_command('1')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(1) # 1秒待機
 
             # LED OFF
-            response = controller.send_command('0')
+            response = arduino.send_command('0')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(1) # 1秒待機
 
             # 不明なコマンドを送信
-            response = controller.send_command('X')
+            response = arduino.send_command('X')
             if response:
                 print(f"Arduino response: {response}")
 
         except KeyboardInterrupt:
             print("\nTest interrupted by user.")
         finally:
-            controller.disconnect()
+            arduino.disconnect()
     else:
         print("Failed to connect to Arduino. Exiting test.")
