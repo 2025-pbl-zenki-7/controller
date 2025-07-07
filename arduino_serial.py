@@ -54,6 +54,6 @@ if __name__ == "__main__":
     uno = USBSerial(path)
     while True:
         uno.send_serial("relay:on")
-        time(2)
+        time.sleep(2)
         uno.send_serial("relay:off")
-        time(2)
+        time.sleep(2)
