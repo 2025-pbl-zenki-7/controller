@@ -3,7 +3,7 @@ import time
 
 
 class ArduinoController:
-    def __init__(self,port = '/dev/ttyACM1',baud_rate = 9600, timeout = 1):
+    def __init__(self,port = '/dev/ttyACM0',baud_rate = 9600, timeout = 1):
         self.port = port
         self.baud_rate = baud_rate
         self.timeout = timeout
@@ -54,7 +54,7 @@ class ArduinoController:
             return None
 
 if __name__ == "__main__":
-    arduino_port = '/dev/ttyACM1'
+    arduino_port = '/dev/ttyACM0'
 
     arduino = ArduinoController(port=arduino_port)
 
