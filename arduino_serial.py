@@ -1,56 +1,86 @@
 import serial
 import time
-import traceback
 
 
-class USBSerial:
-    def __init__(self, path):
-
-        # シリアル通信設定　ボーレートはArudinoと合わせる
+class ArduinoController:
+    def __init__(self,port = 'dev/ttyACM0',baud_rate = 9600, timeout = 1):
+        self.port = port
+        self.baud_rate = baud_rate
+        self.timeout = timeout
+        self.ser = None
+    
+    def connect(self):
         try:
-            self.serialport = serial.Serial(
-                port=path,
-                baudrate=19200,
-                bytesize=serial.EIGHTBITS,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                timeout=0.5,
-            )
-        except serial.SerialException:
-            print(traceback.format_exc())
+            self.ser = serial.Serial(self.port, self.baud_rate, timeout=self.timeout)
+            time.sleep(2) #arduinoの起動時間
+            print(f"[{self.port}] シリアル通信できました")
 
-        # 受信バッファ、送信バッファクリア
-        self.serialport.reset_input_buffer()
-        self.serialport.reset_output_buffer()
-        time.sleep(1)
+            # Arduinoからの初期メッセージを受信（例: "Arduino Ready!"）
+            if self.ser.in_waiting > 0:
+                response = self.ser.readline().decode('utf-8').strip()
+                print(f"[{self.port}] Arduino says: {response}")
+            return True
+        except serial.SerialException as e:
+            print(f"[{self.port}] 接続エラー: {e}")
+            print("Please check:")
+            print(f"  - Is Arduino connected to {self.port}?")
+            print(f"  - Is the baud rate ({self.baud_rate}) correct?")
+            print("  - Do you have permissions to access the serial port? (e.g., sudo usermod -a -G dialout $USER and reboot)")
+            self.ser = None
+            return False
+        
+    def disconnect(self):
+        if self.ser and self.ser.is_open:
+            self.ser.close()
+            print(f"[{self.port}] Serial connection closed.")
+        self.ser = None
 
-    # データ送信関数
-    def send_serial(self, cmd):
-        print("send data : {0}".format(cmd))
+    def send_command(self, command):
+        if not self.ser or not self.ser.is_open:
+            print(f"[{self.port}] Not connected to Arduino. Please call connect() first.")
+            return None
+
         try:
-            clean_cmd = cmd.rstrip()  # 改行を除去
-            self.serialport.write((clean_cmd + "\n").encode("utf-8"))  # 改行付きで送信
-        except serial.SerialException:
-            print(traceback.format_exc())
+            self.ser.write((command + '/n').encode('utf-8'))
+            print(f"[{self.port}] Sent: {command}")
+            time.sleep(0.1) # Arduinoからの返信を待つ
 
-    # データ受信関数
-    def receive_serial(self):
-
-        try:
-            rcvdata = self.serialport.readline()
-        except serial.SerialException:
-            print(traceback.format_exc())
-
-        # 受信データを文字列に変換　改行コードを削除
-        return rcvdata.decode("utf-8").rstrip()
-
+            if self.ser.in_waiting > 0:
+                response = self.ser.readline().decode('utf-8').strip()
+                return response
+            return None # 返信がない場合
+        except Exception as e:
+            print(f"[{self.port}] Error sending command or receiving response: {e}")
+            return None
 
 if __name__ == "__main__":
-    path = '/dev/ttyACM0'
+    arduino_port = '/dev/ttyACM0'
 
-    uno = USBSerial(path)
-    while True:
-        uno.send_serial("relay:on")
-        time.sleep(2)
-        uno.send_serial("relay:off")
-        time.sleep(2)
+    arduino = ArduinoController(port=arduino_port)
+
+    if arduino.connect():
+        try:
+            print("\n--- Testing relay control ---")
+            # RELAY ON
+            response = arduino.send_command('relay:on')
+            if response:
+                print(f"Arduino response: {response}")
+            time.sleep(5) # 1秒待機
+
+            # RELAY OFF
+            response = arduino.send_command('relay:off')
+            if response:
+                print(f"Arduino response: {response}")
+            time.sleep(5) # 1秒待機
+
+            # 不明なコマンドを送信
+            response = arduino.send_command('X')
+            if response:
+                print(f"Arduino response: {response}")
+
+        except KeyboardInterrupt:
+            print("\nTest interrupted by user.")
+        finally:
+            arduino.disconnect()
+    else:
+        print("Failed to connect to Arduino. Exiting test.")
