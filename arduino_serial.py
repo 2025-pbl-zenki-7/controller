@@ -12,8 +12,8 @@ class ArduinoController:
     def connect(self):
         try:
             self.ser = serial.Serial(self.port, self.baud_rate, timeout=self.timeout)
-            time.sleep(2) # Arduinoの起動を待つ
-            print(f"[{self.port}] Serial connection established successfully.")
+            time.sleep(2) #arduinoの起動時間
+            print(f"[{self.port}] シリアル通信できました")
 
             # Arduinoからの初期メッセージを受信（例: "Arduino Ready!"）
             if self.ser.in_waiting > 0:
@@ -21,7 +21,7 @@ class ArduinoController:
                 print(f"[{self.port}] Arduino says: {response}")
             return True
         except serial.SerialException as e:
-            print(f"[{self.port}] Error connecting to Arduino: {e}")
+            print(f"[{self.port}] 接続エラー: {e}")
             print("Please check:")
             print(f"  - Is Arduino connected to {self.port}?")
             print(f"  - Is the baud rate ({self.baud_rate}) correct?")
@@ -62,13 +62,13 @@ if __name__ == "__main__":
         try:
             print("\n--- Testing relay control ---")
             # RELAY ON
-            response = arduino.send_command('relay_on')
+            response = arduino.send_command('relay:on')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(5) # 1秒待機
 
             # RELAY OFF
-            response = arduino.send_command('relay_off')
+            response = arduino.send_command('relay:off')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(5) # 1秒待機
