@@ -41,9 +41,9 @@ class ArduinoController:
             return None
 
         try:
-            self.ser.write((command + '/n').encode('utf-8'))
+            self.ser.write(command)
             print(f"[{self.port}] Sent: {command}")
-            time.sleep(0.1) # Arduinoからの返信を待つ
+            time.sleep(1) # Arduinoからの返信を待つ
 
             if self.ser.in_waiting > 0:
                 response = self.ser.readline().decode('utf-8').strip()
