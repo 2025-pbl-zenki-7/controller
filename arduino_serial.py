@@ -3,7 +3,7 @@ import time
 
 
 class ArduinoController:
-    def __init__(self,port = 'dev/ttyACM1',baud_rate = 9600, timeout = 1):
+    def __init__(self,port = '/dev/ttyACM1',baud_rate = 9600, timeout = 1):
         self.port = port
         self.baud_rate = baud_rate
         self.timeout = timeout
@@ -41,7 +41,7 @@ class ArduinoController:
             return None
 
         try:
-            self.ser.write((command + '/n').encode('utf-8'))
+            self.ser.write((command + '\n').encode('utf-8'))
             print(f"[{self.port}] Sent: {command}")
             time.sleep(0.1) # Arduinoからの返信を待つ
 
