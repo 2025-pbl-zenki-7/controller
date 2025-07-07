@@ -26,13 +26,10 @@ class USBSerial:
 
     # データ送信関数
     def send_serial(self, cmd):
-
         print("send data : {0}".format(cmd))
         try:
-            # rstrip()で明示的に改行コードを削除
-            cmd.rstrip()
-            # 改行コードを付与　バイナリに変換して送信
-            self.serialport.write((cmd + "\n").encode("utf-8"))
+            clean_cmd = cmd.rstrip()  # 改行を除去
+            self.serialport.write((clean_cmd + "\n").encode("utf-8"))  # 改行付きで送信
         except serial.SerialException:
             print(traceback.format_exc())
 
