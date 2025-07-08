@@ -53,6 +53,27 @@ class ArduinoController:
             print(f"[{self.port}] Error sending command or receiving response: {e}")
             return None
 
+    """""
+    対応コマンド
+    relay:on
+    relay:off
+    motor1:on
+    motor1:off
+    motor2:on
+    motor2:off
+    motor3:on
+    motor3:off
+    motor4A:on
+    motor4A:off
+    motor4B:on
+    motor4B:off
+    motor5A:on
+    motor5A:off
+    motor5B:on
+    motor5B:off
+    reset
+    """
+
 if __name__ == "__main__":
     arduino_port = '/dev/ttyACM0'
 
