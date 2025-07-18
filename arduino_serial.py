@@ -54,24 +54,14 @@ class ArduinoController:
             return None
 
     """""
-    対応コマンド
-    relay:on
-    relay:off
-    motor1:on
-    motor1:off
-    motor2:on
-    motor2:off
-    motor3:on
-    motor3:off
-    motor4A:on
-    motor4A:off
-    motor4B:on
-    motor4B:off
-    motor5A:on
-    motor5A:off
-    motor5B:on
-    motor5B:off
-    reset
+    有効コマンド
+    watering
+    motor1          |           モーター1を動かす
+    motor2          |           モーター2を動かす
+    motor3          |           モーター3を動かす
+    servo4          |           サーボ4を動かす
+    servo5          |           サーボ5を動かす
+    reboot          |           Arduinoをリスタートする
     """
 
 if __name__ == "__main__":
@@ -82,14 +72,8 @@ if __name__ == "__main__":
     if arduino.connect():
         try:
             print("\n--- Testing relay control ---")
-            # RELAY ON
-            response = arduino.send_command('relay:on')
-            if response:
-                print(f"Arduino response: {response}")
-            time.sleep(5) # 1秒待機
-
-            # RELAY OFF
-            response = arduino.send_command('relay:off')
+            # WATERING
+            response = arduino.send_command('watering')
             if response:
                 print(f"Arduino response: {response}")
             time.sleep(5) # 1秒待機
