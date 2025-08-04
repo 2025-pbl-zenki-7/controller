@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from conversation import router as conversation_router
+from routers import conversation_router, admin_router
 
 
 app = FastAPI(
@@ -28,6 +28,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 app.include_router(conversation_router)
+app.include_router(admin_router)
 
 
 @app.get("/", response_class=HTMLResponse)

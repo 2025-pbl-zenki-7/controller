@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お茶登録</title>
+    <style>
+        /* 基本的なスタイリング */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+
+            margin: 0;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        /* フォームコンテナ */
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        /* 各入力フィールドのグループ化 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* ラベルと入力フィールドのスタイル */
+        label {
+            display: block;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        /* ボタンのスタイル */
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        button[type="submit"]:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>お茶設定フォーム</h2>
+        <form action="/api/admin/update/teatype" method="get">
+
+            <div class="form-group">
+                <label for="tea1">お茶1:</label>
+                <input autofocus type="text" id="tea1" name="tea1" placeholder="ダージリン" value="" required>
+            </div>
+            <div class="form-group">
+                <label for="tea2">お茶2:</label>
+                <input type="text" id="tea2" name="tea2" placeholder="アッサム" value="" required>
+            </div>
+            <div class="form-group">
+                <label for="tea3">お茶3:</label>
+                <input type="text" id="tea3" name="tea3" placeholder="アールグレイ" value="" required>
+            </div>
+            <button type="submit">登録ボタン</button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -39,8 +39,5 @@ class CafeOwner:
         )
         return output
 
-
-# ai = CafeOwner()
-
-# while True:
-#    ai.input(input())
+    def refresh(self):
+        self.__init__()

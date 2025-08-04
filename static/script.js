@@ -27,14 +27,6 @@ const endConversationButton = document.getElementById(
 	"end-conversation-button",
 );
 
-// 管理者用要素
-const adminTea1NameField = document.getElementById("admin-tea1-name");
-const adminTea2NameField = document.getElementById("admin-tea2-name");
-const adminTea3NameField = document.getElementById("admin-tea3-name");
-const updateTeaNamesButton = document.getElementById("update-tea-names-button");
-const getTeaNamesButton = document.getElementById("get-tea-names-button");
-const adminMessageDiv = document.getElementById("admin-message");
-
 const pandaExpressions = {
 	neutral: "/static/images/panda_neutral.jpeg",
 	smiling: "/static/images/panda_smiling.jpeg",
@@ -111,4 +103,11 @@ userInputField.addEventListener("keypress", (event) => {
 	if (event.key === "Enter") {
 		sendInputButton.click();
 	}
+});
+
+endConversationButton.addEventListener("click", async () => {
+	console.log("endConversationButton");
+	await fetch(`${API_URL}/conversation/end`);
+	isConversationActive = !isConversationActive;
+	setUIState(isConversationActive);
 });

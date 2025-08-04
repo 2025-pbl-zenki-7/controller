@@ -53,3 +53,9 @@ class AiResponse(BaseModel):
 
 class UserTextInput(BaseModel):
     text: str
+
+
+class TeaTypeConfig(BaseModel):
+    tea1: str
+    tea2: str
+    tea3: str
